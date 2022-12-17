@@ -1,9 +1,30 @@
-ARG ALPINE_VERSION
-FROM alpine:${ALPINE_VERSION}
+FROM ubuntu:22.04
 ARG TARGETARCH
 
-ADD src/install.sh install.sh
-RUN sh install.sh && rm install.sh
+
+ADD src/ACCC4CF8.asc /etc/apt/trusted.gpg.d/pgdg.asc
+RUN     tee /etc/apt/trusted.gpg.d/pgdg.asc  &>/dev/null
+
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+RUN apt-get update
+
+RUN apt-get update
+RUN apt-get install -y postgresql-client
+RUN apt-get update && apt-get install -y \
+    gnupg \
+    python3 \
+    python3-pip \
+    curl 
+
+RUN pip3 install awscli
+
+RUN curl -Lo go-cron.tar.gz https://github.com/ivoronin/go-cron/releases/download/v0.0.5/go-cron_0.0.5_linux_${TARGETARCH}.tar.gz 
+RUN tar xvf go-cron.tar.gz
+RUN rm go-cron.tar.gz
+RUN mv go-cron /usr/local/bin/go-cron
+RUN chmod u+x /usr/local/bin/go-cron
+
+RUN apt-get purge -y curl 
 
 ENV POSTGRES_DATABASE ''
 ENV POSTGRES_HOST ''

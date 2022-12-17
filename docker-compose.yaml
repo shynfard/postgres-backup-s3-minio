@@ -2,27 +2,25 @@
 # $ docker compose up -d --build --force-recreate
 
 services:
-  postgres:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+  # postgres:
+  #   image: postgres:14
+  #   environment:
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: password
 
   backup:
-    build:
-      context: .
-      args:
-        ALPINE_VERSION: '3.16'
+    image: shynfard/pgbackups3
     environment:
-      SCHEDULE: '@weekly'     # optional
+      SCHEDULE: '@daily'     # optional
       BACKUP_KEEP_DAYS: 7     # optional
-      PASSPHRASE: passphrase  # optional
-      S3_REGION:
-      S3_ACCESS_KEY_ID:
-      S3_SECRET_ACCESS_KEY:
-      S3_BUCKET:
-      S3_PREFIX: backup
-      POSTGRES_HOST: postgres
+      # PASSPHRASE: passphrase  # optional
+      S3_ENDPOINT: https://s3.agio360.com
+      # S3_REGION: eu-center-netcup1
+      S3_ACCESS_KEY_ID: i97wpHtecF4bQGc2
+      S3_SECRET_ACCESS_KEY: TGvkABhgVdRlOnHuGdg6P2LGoTEwzIBH
+      S3_BUCKET: backups
+      S3_PREFIX: test
+      POSTGRES_HOST: 192.168.178.4
       POSTGRES_DATABASE: postgres
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: uWW3tyWCP7sR
